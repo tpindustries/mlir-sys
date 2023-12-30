@@ -90,13 +90,20 @@ fn run() -> Result<(), Box<dyn Error>> {
         println!("cargo:rustc-link-lib={}", name);
     }
 
+    println!("cargo:warning=OUT_DIR is set to {}", env::var("OUT_DIR")?);
+
+    let bindings_file = Path::new(&env::var("OUT_DIR")?).join("bindings.rs");
+
     bindgen::builder()
         .header("wrapper.h")
         .clang_arg(format!("-I{}", llvm_config("--includedir")?))
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .generate()
         .unwrap()
-        .write_to_file(Path::new(&env::var("OUT_DIR")?).join("bindings.rs"))?;
+        .write_to_file(&bindings_file)?;
+
+    // See src/lib.rs for why this is needed.
+    fs::copy(bindings_file, Path::new("src").join("bindings.rs"))?;
 
     Ok(())
 }
