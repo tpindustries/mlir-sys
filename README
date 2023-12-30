@@ -1,0 +1,7 @@
+mlir-sys — Rust bindings to the MLIR C API.
+
+Link: https://mlir.llvm.org/docs/CAPI
+
+Usage:
+	* Generate bindings: cargo build
+	* use mlir_sys::*;
