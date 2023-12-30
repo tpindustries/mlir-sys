@@ -98,6 +98,8 @@ fn run() -> Result<(), Box<dyn Error>> {
         .header("wrapper.h")
         .clang_arg(format!("-I{}", llvm_config("--includedir")?))
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .use_core()
+        .ctypes_prefix("::core::ffi")
         .generate()
         .unwrap()
         .write_to_file(&bindings_file)?;
